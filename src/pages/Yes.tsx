@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import emailjs from '@emailjs/browser';
 import { Heart, Send, Calendar, User, Flower, Star, Gift } from 'lucide-react';
 import './Yes.css';
@@ -8,26 +8,27 @@ function Yes() {
     name: '',
     preferredDate: new Date().toISOString().slice(0, 10),
     dateType: '',
-    otherDetails: ''
+    otherDetails: '',
   });
 
-  const [activeType, setActiveType] = useState(null);
-  const [submitStatus, setSubmitStatus] = useState('');
-  const [showCelebration, setShowCelebration] = useState(false);
-  const [confettiParticles, setConfettiParticles] = useState([]);
+  const [activeType, setActiveType] = useState<string | null>(null);
+  const [showCelebration, setShowCelebration] = useState<boolean>(false);
+  const [confettiParticles, setConfettiParticles] = useState<
+    { id: number; x: number; y: number; color: string; size: number; delay: number }[]
+  >([]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleTypeSelect = (type) => {
-    setFormData(prevState => ({
+  const handleTypeSelect = (type: string) => {
+    setFormData((prevState) => ({
       ...prevState,
-      dateType: type
+      dateType: type,
     }));
     setActiveType(type);
   };
@@ -41,43 +42,38 @@ function Yes() {
         y: -10,
         color: `hsl(${Math.random() * 360}, 70%, 60%)`,
         size: Math.random() * 10 + 5,
-        delay: Math.random() * 3
+        delay: Math.random() * 3,
       });
     }
     setConfettiParticles(particles);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    // EmailJS configuration
+
     const serviceId = 'service_pxnl72b';
     const templateId = 'template_8ec900r';
     const publicKey = 'FTs6PN7SlpEVV9NEJ';
 
-    // Prepare template parameters
     const templateParams = {
       name: formData.name,
       preferredDate: formData.preferredDate,
       dateType: formData.dateType || 'Not specified',
-      otherDetails: formData.otherDetails || 'No additional details'
+      otherDetails: formData.otherDetails || 'No additional details',
     };
 
-    // Send email
-    emailjs.send(serviceId, templateId, templateParams, publicKey)
-      .then((response) => {
-        setSubmitStatus('success');
-        // Trigger celebration
+    emailjs
+      .send(serviceId, templateId, templateParams, publicKey)
+      .then(() => {
         setShowCelebration(true);
         createConfettiParticles();
 
-        // Reset form after a longer delay
         setTimeout(() => {
           setFormData({
             name: '',
             preferredDate: new Date().toISOString().slice(0, 10),
             dateType: '',
-            otherDetails: ''
+            otherDetails: '',
           });
           setActiveType(null);
           setShowCelebration(false);
@@ -85,7 +81,6 @@ function Yes() {
         }, 5000);
       })
       .catch((error) => {
-        setSubmitStatus('error');
         console.error('Email send error:', error);
         alert('Failed to send proposal. Please try again.');
       });
@@ -96,7 +91,7 @@ function Yes() {
     { icon: '🏛️', label: 'Museum', value: 'museum' },
     { icon: '🌳', label: 'Outdoor', value: 'outdoor' },
     { icon: '🎭', label: 'Show', value: 'show' },
-    { icon: '❓', label: 'Other', value: 'other' }
+    { icon: '❓', label: 'Other', value: 'other' },
   ];
 
   return (
@@ -105,15 +100,15 @@ function Yes() {
         <div className="celebration-overlay">
           <div className="confetti-container">
             {confettiParticles.map((particle) => (
-              <div 
-                key={particle.id} 
-                className="confetti-particle" 
+              <div
+                key={particle.id}
+                className="confetti-particle"
                 style={{
                   left: `${particle.x}%`,
                   backgroundColor: particle.color,
                   width: `${particle.size}px`,
                   height: `${particle.size}px`,
-                  animationDelay: `${particle.delay}s`
+                  animationDelay: `${particle.delay}s`,
                 }}
               />
             ))}
@@ -122,26 +117,26 @@ function Yes() {
             <div className="floating-elements">
               {[...Array(15)].map((_, i) => (
                 <React.Fragment key={i}>
-                  <Flower 
-                    className="floating-icon flower-icon" 
+                  <Flower
+                    className="floating-icon flower-icon"
                     style={{
                       left: `${Math.random() * 100}%`,
-                      animationDelay: `${Math.random() * 3}s`
-                    }} 
+                      animationDelay: `${Math.random() * 3}s`,
+                    }}
                   />
-                  <Star 
-                    className="floating-icon star-icon" 
+                  <Star
+                    className="floating-icon star-icon"
                     style={{
                       left: `${Math.random() * 100}%`,
-                      animationDelay: `${Math.random() * 3}s`
-                    }} 
+                      animationDelay: `${Math.random() * 3}s`,
+                    }}
                   />
-                  <Gift 
-                    className="floating-icon gift-icon" 
+                  <Gift
+                    className="floating-icon gift-icon"
                     style={{
                       left: `${Math.random() * 100}%`,
-                      animationDelay: `${Math.random() * 3}s`
-                    }} 
+                      animationDelay: `${Math.random() * 3}s`,
+                    }}
                   />
                 </React.Fragment>
               ))}
@@ -166,20 +161,20 @@ function Yes() {
 
           <div className="form-group">
             <User className="input-icon" />
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
               placeholder="Your Name"
-              required 
+              required
             />
           </div>
 
           <div className="form-group">
             <Calendar className="input-icon" />
-            <input 
-              type="date" 
+            <input
+              type="date"
               name="preferredDate"
               value={formData.preferredDate}
               onChange={handleChange}
@@ -188,7 +183,7 @@ function Yes() {
 
           <div className="date-type-selection">
             {dateTypes.map((type) => (
-              <button 
+              <button
                 key={type.value}
                 type="button"
                 className={`date-type-btn ${activeType === type.value ? 'active' : ''}`}
