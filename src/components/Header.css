@@ -1,0 +1,9 @@
+.header {
+  font-size: 24px;
+}
+
+@media (min-width: 1024px) {
+  .header {
+    font-size: 32px;
+  }
+}
